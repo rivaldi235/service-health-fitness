@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Hash;
-// use Illuminate\Contracts\Validation\Rule;
 
 class RegisterController extends Controller
 {
@@ -18,7 +17,7 @@ class RegisterController extends Controller
     {
         // $this->validate($request, [
         //     'name' => ['required', 'string', 'max:255'],
-        //     'email' => ['required', 'string', 'max:255', Rule::unique(User::class)],
+        //     'email' => ['required', 'string', 'max:255'],
         //     'password' => ['required', 'min:8'],
         // ]);
 
@@ -26,6 +25,7 @@ class RegisterController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'role_id' => $request->role_id,
         ]);
 
         $token = $user->createToken('myAppToken');
