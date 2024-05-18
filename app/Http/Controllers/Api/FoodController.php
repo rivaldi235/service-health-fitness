@@ -6,6 +6,7 @@ use App\Models\Food;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\FoodResource;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class FoodController extends Controller
 {
@@ -14,15 +15,22 @@ class FoodController extends Controller
      */
     public function index()
     {
-        $foods = Food::Select('id', 'name', 'carbo', 'fat', 'protein', 'calories')
+        try {
+            $foods = Food::Select('id', 'name', 'carbo', 'fat', 'protein', 'calories')
                      ->limit(10)
                      ->get();
-                    
-        return response()->json([
-            'message' => 'OK',
-            'status' => 200,
-            'data' => FoodResource::collection($foods),
-        ]);
+            return response()->json([
+                'message' => 'OK',
+                'status' => 200,
+                'data' => FoodResource::collection($foods),
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'Internal Server Error',
+                'status' => 500,
+            ], 500);
+        }
+        
     }
 
     /**
@@ -38,19 +46,30 @@ class FoodController extends Controller
             'calories' => 'required',
         ]);
 
-        $food = Food::create([
-            'name' => $request->name,
-            'carbo' => $request->carbo,
-            'fat' => $request->fat,
-            'protein' => $request->protein,
-            'calories' => $request->calories,
-        ]);
+        try {
+            $food = Food::create([
+                'name' => $request->name,
+                'carbo' => $request->carbo,
+                'fat' => $request->fat,
+                'protein' => $request->protein,
+                'calories' => $request->calories,
+            ], 201);
 
-        return response()->json([
-            'message' => 'Created',
-            'status' => 201,
-            'data' => (new FoodResource($food)),
-        ]);
+            return response()->json([
+                'message' => 'Created',
+                'status' => 201,
+                'data' => (new FoodResource($food)),
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'Internal Server Error',
+                'status' => 500,
+            ], 500);
+        }
+
+        
+
+        
     }
 
     /**
@@ -58,13 +77,25 @@ class FoodController extends Controller
      */
     public function show(string $id)
     {
-        $food = Food::findOrFail($id);
+        try {
+            $food = Food::findOrFail($id);
 
-        return response()->json([
-            'message' => 'OK',
-            'status' => 200,
-            'data' => (new FoodResource($food)),
-        ]);
+            return response()->json([
+                'message' => 'OK',
+                'status' => 200,
+                'data' => (new FoodResource($food)),
+            ]);
+        } catch (ModelNotFoundException $th) {
+            return response()->json([
+                'message' => 'Data Not Found',
+                'status' => 404,
+            ], 400);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'message' => 'Internal Server Error',
+                'status' => 500,
+            ], 500);
+        }
     }
 
     /**
@@ -80,21 +111,33 @@ class FoodController extends Controller
             'calories' => 'required',
         ]);
 
-        $food = Food::findOrFail($id);
+        try {
+            $food = Food::findOrFail($id);
 
-        $food->update([
-            'name' => $request->name,
-            'carbo' => $request->carbo,
-            'fat' => $request->fat,
-            'protein' => $request->protein,
-            'calories' => $request->calories,
-        ]);
+            $food->update([
+                'name' => $request->name,
+                'carbo' => $request->carbo,
+                'fat' => $request->fat,
+                'protein' => $request->protein,
+                'calories' => $request->calories,
+            ]);
 
-        return response()->json([
-            'message' => 'Created',
-            'status' => 201,
-            'data' => (new FoodResource($food)),
-        ]);
+            return response()->json([
+                'message' => 'Created',
+                'status' => 201,
+                'data' => (new FoodResource($food)),
+            ]);
+        } catch (ModelNotFoundException $th) {
+            return response()->json([
+                'message' => 'Data Not Found',
+                'status' => 404,
+            ], 400);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'message' => 'Internal Server Error',
+                'status' => 500,
+            ], 500);
+        }
     }
 
     /**
@@ -102,13 +145,26 @@ class FoodController extends Controller
      */
     public function destroy(string $id)
     {
-        $food = Food::findOrFail($id);
+        try {
+            $food = Food::findOrFail($id);
 
-        $food->delete();
+            $food->delete();
 
-        return response()->json([
-            'message' => 'Data Successfuly Deleted',
-            'status' => 200,
-        ]);
+            return response()->json([
+                'message' => 'Data Successfuly Deleted',
+                'status' => 200,
+            ]);
+        } catch (ModelNotFoundException $th) {
+            return response()->json([
+                'message' => 'Data Not Found',
+                'status' => 404,
+            ], 400);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'message' => 'Internal Server Error',
+                'status' => 500,
+            ], 500);
+        }
+        
     }
 }
