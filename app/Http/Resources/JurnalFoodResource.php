@@ -15,7 +15,7 @@ class JurnalFoodResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'category_jurnal_food_id' => $this->category_jurnal_food_id,
+            'category_id' => $this->category_id,
             'food_id' => $this->food_id,
             'user_id' => $this->user_id,
             'total_serving' => $this->total_serving,
