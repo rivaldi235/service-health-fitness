@@ -2,7 +2,6 @@
 
 namespace App\Service;
 
-use App\Repositories\FoodRepository;
 use App\Repositories\ActivityRepository;
 
 Class ActivityService

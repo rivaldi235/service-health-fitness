@@ -11,15 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('jurnal_foods', function (Blueprint $table) {
+        Schema::create('jurnal_food', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('category_jurnal_food_id');
+            $table->unsignedBigInteger('category_id');
             $table->unsignedBigInteger('food_id');
             $table->unsignedBigInteger('user_id');
             $table->integer('total_serving');
+            $table->integer('total_calory');
             $table->timestamps();
 
-            $table->foreign('category_jurnal_food_id')->references('id')->on('category_jurnal_foods')->onDelete('cascade');
+            $table->foreign('category_id')->references('id')->on('category_jurnal_food')->onDelete('cascade');
             $table->foreign('food_id')->references('id')->on('food')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
@@ -30,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('jurnal_foods');
+        Schema::dropIfExists('jurnal_food');
     }
 };

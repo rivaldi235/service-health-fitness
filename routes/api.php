@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\FoodController;
 use App\Http\Controllers\Api\ActivityController;
 use App\Http\Controllers\Api\Auth\LoginController;
+use App\Http\Controllers\Api\JurnalFoodController;
 use App\Http\Controllers\Api\Auth\RegisterController;
 use App\Http\Controllers\Api\CategoryJurnalFoodController;
 
@@ -19,4 +20,6 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('/activities', ActivityController::class);
         Route::apiResource('/categoryfoods', CategoryJurnalFoodController::class);
     });
+
+    Route::apiResource('/jurnalfoods', JurnalFoodController::class);
 });
